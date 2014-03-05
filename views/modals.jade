@@ -1,0 +1,52 @@
+mixin login
+	div#loginModal.modal.fade
+		div.modal-dialog
+			div.modal-content
+				div.modal-header
+					button.close(type="button", data-dismiss="modal", aria-hidden="true") &times;
+					h2.modal-title.text-center Login
+					div.modal-body
+						p#login-error.text-danger
+						form#login-form(action="", method="post", enctype="multipart/form-data")
+						div.form-group
+							label(for="id-login-name") Username
+							input#id-login-name.form-control.input-lg(type="text", placeholder="Username")
+						div.form-group
+							label(for="id-login-pass") Password
+							input#id-login-pass.form-control.input-lg(type="password", placeholder="Password")
+					div.modal-footer
+						button#login-button.btn.btn-primary.pull-right(type="button") Login
+						a.btn.btn-success.pull-left(data-dismiss="modal", data-toggle="modal", href="#signupModal") Register
+
+mixin signup
+	div#signupModal.modal.fade
+		div.modal-dialog
+			div.modal-content
+				div.modal-header
+					button.close(type="button", data-dismiss="modal", aria-hidden="true") &times;
+					h2.modal-title.text-center Sign up
+					div.modal-body
+						p#signup-error.text-danger
+						form#signup-form(action="", method="post", enctype="multipart/form-data")
+						div.form-group
+							label(for="id-signup-name") Username
+							input#id-signup-name.form-control.input-lg(type="text", placeholder="user")
+						div.form-group
+							label(for="id-signup-email") E-mail
+							input#id-signup-email.form-control.input-lg(type="email", placeholder="me@mydomain.com")
+						div.form-group
+							label(for="id-signup-pass") Password
+							input#id-signup-pass.form-control(type="password", placeholder="")
+							span.help-block please, type your password again
+							input#id-signup-pass-check.form-control(type="password", placeholder="")
+						div.form-group
+							label(for="id-signup-firstname") First name
+							input#id-signup-firstname.form-control.input-lg(type="text", placeholder="Name")
+						div.form-group
+							label(for="id-signup-lastname") Last name
+							input#id-signup-lastname.form-control.input-lg(type="text", placeholder="Surname")
+						
+
+					div.modal-footer
+						button#signup-button.btn.btn-primary.pull-right(type="button") Login
+						a.btn.btn-success.pull-left(data-dismiss="modal", data-toggle="modal", href="#registerModal") Register

@@ -2,8 +2,14 @@ var express = require('express');
 
 var app = express();
 
+//app.use(express.bodyParser());
+app.set('view engine', 'jade'); 
+
+app.use(express.static(__dirname + '/public'));
+
+
 app.get('/', function(req, res){
-	res.send("HELLO WORLD");
+	res.render("index");
 });
 
 app.listen(3000);

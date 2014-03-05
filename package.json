@@ -1,12 +1,14 @@
 {
-  "name": "sorelcom",
+  "name": "SORELCOM",
   "description": "Social Routes Empowered By Linked Data and Context Mining - Webpage",
   "author": "Aimar Rodriguez <aimar.rodriguez.s@gmail.com>",
   "dependencies": {
     "pg": "2.x.x",
     "express": "4.x.x",
     "consolidate": "0.x.x",
-    "nib": "1.x.x"
-  },
-  "engine": "node >= 0.4.1"
+    "nib": "1.x.x",
+    "request":"2.x.x",
+    "jade":"1.x.x",
+    "font-awesome":"4.x.x"
+  }
 }

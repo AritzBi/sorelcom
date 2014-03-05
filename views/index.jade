@@ -1,0 +1,105 @@
+doctype html
+html
+	head
+		meta(charset="utf-8")
+		meta(http-equiv="X-UA-Compatible" content="IE=edge")
+		meta(name="viewport", content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width")
+		meta(name="mobile-web-app-capable", content="yes")
+		meta(name="apple-mobile-web-app-capable", content="yes")
+		meta(name="description", content="")
+		meta(name="author", content="")
+
+		title Sorelcom
+
+		link(href="/css/leaflet.awesome-markers.css", rel="stylesheet", type="text/css")
+		link(href="/css/style.css", rel="stylesheet", type="text/css")
+		link(href="/css/bootstrap.min.css", rel="stylesheet", type="tex)/css")
+		link(href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css", rel="stylesheet" type=")ext/css")
+		link(href="/css/leaflet.css", rel="stylesheet", type="text/css")
+		link(href="/js/plugins/leaflet-sidebar/L.Control.Sidebar.css", rel="stylesheet" type="text/css")
+		link(href="/css/main.css", rel="stylesheet", type="text/css")
+	body
+		div.navbar.navbar-inverse.navbar-fixed-top(role="navigation")
+			div.navbar-header
+				button.navbar-toggle(type="button", data-toggle="collapse", data-target=".navbar-collapse")
+					span.icon-bar
+					span.icon-bar
+					span.icon-bar
+				a.navbar-brand(href="#") Sorelcom
+         
+			div.navbar-collapse.collapse
+				form.navbar-form.navbar-right(role="search")
+					div.form-group.has-feedback.navbar-right
+						input#searchbox.form-control(type="text", placeholder="Search")
+						span#searchicon.fa.fa-search.form-control-feedback
+				ul.nav.navbar-nav
+					li
+						a(href="#aboutModal", data-toggle="modal")
+							i.fa.fa-question-circle(style="color: white") 
+							| &nbsp;&nbsp;About
+					li.dropdown
+						a#toolsDrop.dropdown-toggle(href="#", role="button", data-toggle="dropdown")  
+							i.fa.fa-globe(style="color: white") 
+							| &nbsp;&nbsp;Tools
+							b.caret
+
+						ul.dropdown-menu
+							li
+								a#fuse-button(href="#fuseModal", data-toggle="modal", data-target=".navbar-collapse.in")
+									i.fa.fa-arrows-alt
+									| &nbsp;&nbsp;Fuse Routes
+							li
+								a(href="#legendModal", data-toggle="modal")
+									i.fa.fa-picture-o
+									| &nbsp;&nbsp;Show Legend
+
+					li
+						a(href="#", data-toggle="collapse", data-target=".navbar-collapse.in", onclick="sidebar.toggle(); return false;")
+							i.fa.fa-road(style="color: white")
+							| &nbsp;&nbsp;Routes
+					li
+						-if(_user) {
+							a#upload-button(href="#uploadModal", data-toggle="modal")
+								i.fa.fa-cloud-upload
+								| &nbsp;&nbsp;Upload
+						-} else {
+							a#upload-button(href="#loginModal", data-toggle="modal")
+								i.fa.fa-cloud-upload
+								| &nbsp;&nbsp;Upload
+						-}
+
+					li#log-button.pull-right
+						-if(_user) {
+							a#logout-button(href="#")
+								i.fa.fa-user
+								| &nbsp;&nbsp;Logout
+						-} else {
+							a(href="#loginModal", data-toggle="modal")
+								i.fa.fa-user
+								| &nbsp;&nbsp;Login
+						-}
+
+
+		div#map
+		div#sidebar
+			div#route-list.list-group.route-list.voffset2
+		div#loading(style="display:block;")
+			div.loading-indicator
+				div.progress.progress-striped.active
+					div.progress-bar.progress-bar-info(style="width: 100%")
+
+		include modals
+		mixin login()
+		mixin signup()
+
+
+		script(type="text/javascript", src="/js/jquery-1.11.0.min.js")
+		script(type="text/javascript", src="/js/bootstrap.min.js")
+		script(type="text/javascript", src="/js/plugins/typeahead/typeahead.bundle.min.js")
+		script(type="text/javascript", src="/js/leaflet.js")
+		script(type="text/javascript", src="/js/plugins/leaflet-sidebar/L.Control.Sidebar.js")
+		script(type="text/javascript", src="/js/plugins/awesome-markers/leaflet.awesome-markers.js")
+		script(type="text/javascript", src="/js/plugins/jquery-cookie/jquery.cookie.js")
+		script(type="text/javascript", src="/js/plugins/GPX/gpx.js")
+		script(type="text/javascript", src="/js/initialize_map.js")
+		script(type="text/javascript", src="/js/main.js")

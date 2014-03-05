@@ -1,0 +1,7 @@
+li
+                    {% if user.is_authenticated %}
+                    <li><a href="#uploadModal" id="upload-button" data-toggle="modal"><i class="fa fa-cloud-upload"></i>&nbsp;&nbsp;Upload</a></li>
+                    {% else %}
+                    <li><a href="#loginModal" id="upload-button" data-toggle="modal"><i class="fa fa-cloud-upload"></i>&nbsp;&nbsp;Upload</a></li>
+                    {% endif %}
+                    
