@@ -1,5 +1,3 @@
-var request = require('request');
-
 query = "PREFIX afn: <http://jena.hpl.hp.com/ARQ/function#> \
 PREFIX fn: <http://www.w3.org/2005/xpath-functions#> \
 PREFIX owl: <http://www.w3.org/2002/07/owl#> \

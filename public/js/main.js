@@ -169,7 +169,10 @@ logout = function(){
 };
 
 register= function(){
-    console.log("register");
+    $.post('/ajax/register', $('#signup-form').serialize(), function(data){  
+        console.log(data);
+    });
+
 };
 
 // Highlight search box text on click
@@ -195,7 +198,8 @@ navigator.geolocation.getCurrentPosition(function(position){
 $('#logout-button').click(logout);
 
 $('#login-button').click(function(){
-    $.post('/api/login', $('#login-form').serializeArray(), function(data){  
+    $.post('/ajax/login', $('#login-form').serialize(), function(data){  
+        console.log(data);
        if(data.success != undefined){
         login();
         $('#loginModal').modal('hide');
@@ -206,7 +210,7 @@ $('#login-button').click(function(){
     $('#login-form')[0].reset();
 });
 
-$('#register-button').click(register);
+$('#signup-button').click(register);
 
 $('#route-upload-button').click(function(){
     var fd = new FormData($('#upload-form')[0]);
