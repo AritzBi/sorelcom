@@ -149,39 +149,87 @@ loadRouteList = function(){
     });
 }
 
-login = function(){
-    loadRouteList();
-    $('#log-button').html('<a href="#" id="logout-button"><i class="fa fa-user"></i>&nbsp;&nbsp;Logout</a>');
-    $('#upload-button').attr('href','#uploadModal');
-    $('#logout-button').click(logout);
+login = function(event){
+    $.post('/ajax/login', $('#login-form').serialize(), function(data){  
+        if(data.success == true){
+            loadRouteList();
+            $('#log-button').html('<a href="#" id="logout-button"><i class="fa fa-user"></i>&nbsp;&nbsp;Logout</a>');
+            $('#upload-button').attr('href','#uploadModal');
+            $('#logout-button').click(logout);
+            $('#loginModal').modal('hide');
+        } else {
+            $('#login-error').text(data.result);
+        }
+    }, "json");
+    $('#login-form')[0].reset();
 };
 
-logout = function(){
-    $.getJSON("/api/logout", function(data){
-        if(data.success != undefined){
+logout = function(event){
+    $.post("/ajax/logout", function(data){
+        if(data.success == true){
             $('#log-button').html('<a href="#loginModal" data-toggle="modal"><i class="fa fa-user"></i>&nbsp;&nbsp;Login</a>');
             $('#upload-button').attr('href','#loginModal');
-        loadRouteList();
+            loadRouteList();
         } else {
             //Print logout error msg
         }
     });
 };
 
-register= function(){
-    $.post('/ajax/register', $('#signup-form').serialize(), function(data){  
-        console.log(data);
+register= function(event){
+    $.post('/ajax/register', $('#signup-form').serialize(), function(data){
+        if(data.success){
+            $('#signupModal').modal('hide');
+            $('#loginModal').modal('show');   
+        }
     });
+};
 
+showGeoJSON = function(geojson){
+        var layer = L.geoJson(geojson);
+        layer.addTo(map);
+        map.fitBounds(layer.getBounds());
+};
+
+
+upload = function(event){
+    var reader = new FileReader();
+    var extension = $("#id-route-file").val().split('.').pop();
+
+    reader.onload = function(e) {
+        var geojson;
+        if($.inArray(extension, ['gpx','GPX']) > -1)
+            geojson = toGeoJSON.gpx($.parseXML(reader.result));
+        else if($.inArray(extension, ['kml','KML']) > -1)
+            geojson = toGeoJSON.kml($.parseXML(reader.result));
+        else if($.inArray(extension, ['json','JSON','geojson','GEOJSON']) > -1)
+            geojson = JSON.parse(reader.result);
+        else
+            return $('#upload-error').text('File format not supported'); 
+
+        geojson['properties'] = {};
+        geojson['properties']['name'] = $("#id-upload-name").val();
+        geojson['properties']['id'] = geojson['properties']['name'].replace(/\s/g,'_');
+
+        $.post('/ajax/insertRoute', { 
+            route: geojson
+        }, function(data){
+            if(!data.success)
+                $("#upload-error").text(data.result);
+            else {
+                showGeoJSON(geojson);
+                $('#uploadModal').modal('hide');
+            }
+        }, "json");
+    };
+    
+    reader.readAsText($("#id-route-file").get()[0].files[0]);
 };
 
 // Highlight search box text on click
 $("#searchbox").click(function () {
     $(this).select();
 });
-
-// Typeahead search functionality
-$(document).one("ajaxStop", function () {});
 
 // Get current location at start
 navigator.geolocation.getCurrentPosition(function(position){
@@ -196,72 +244,20 @@ navigator.geolocation.getCurrentPosition(function(position){
 //
 //
 $('#logout-button').click(logout);
+$('#login-button').click(login);
+$('#signup-button').click(register);
+$('#upload-btn').click(upload);
 
-$('#login-button').click(function(){
-    $.post('/ajax/login', $('#login-form').serialize(), function(data){  
-        console.log(data);
-       if(data.success != undefined){
-        login();
-        $('#loginModal').modal('hide');
-       } else {
-        $('#login-error').text(data.error);
-       }
-    }, "json");
-    $('#login-form')[0].reset();
+$('#loginModal').on('hidden.bs.modal', function () {
+    $('#login-error').empty();
 });
 
-$('#signup-button').click(register);
+$('#signupModal').on('hidden.bs.modal', function () {
+    $('#signup-error').empty();
+});
 
-$('#route-upload-button').click(function(){
-    var fd = new FormData($('#upload-form')[0]);
-    var reader = new FileReader();
-    reader.onload = function(e) {
-        var geojson = toGeoJSON.gpx($.parseXML(reader.result));
-        var layer = L.geoJson(geojson);
-        layer.addTo(map);
-        map.fitBounds(layer.getBounds());
-        console.log(geojson);
-        $('#uploadModal').modal('hide');
-        $.post('/api/upload', { 
-            csrfmiddlewaretoken: $.cookie('csrftoken'),
-            json: JSON.stringify(geojson),
-            name: $("#id_route_name").val()
-        }, function(){}, "json");
-        //layer = omnivore.gpx.parse($.parseXML(reader.result));
-        //console.log(layer);
-        //layer.addTo(map);
-        //map.setView(layer.getBounds());
-    };
-    reader.readAsText($("#id_route_file").get()[0].files[0]);
-
-
-    /*
-    $.ajax({
-        url:'/api/upload_route', 
-        type:'POST',
-        data:fd,
-        beforeSend: function(){
-            $("#loading").show();
-        },
-        success:function(data){ 
-            if(data.route){
-                showRoute(data.route.id, data.route.geom)
-                $('#uploadModal').modal('hide');
-            } else {
-                $('#upload-error').text(data.error);
-            }
-        },
-        error: function(error){
-            $('#upload-error').text("Could not upload route, please try again later");
-        },
-        complete: function(){
-            $("#loading").hide();
-        },
-        dataType:"json",
-        processData:false,
-        contentType: false
-    }); 
-*/
+$('#uploadModal').on('hidden.bs.modal', function () {
+    $('#upload-error').empty();
 });
 
 $('a.route').on('click.load',function(){
@@ -272,4 +268,10 @@ $('a.route').on('click.load',function(){
 loadRouteList();
 $("#loading").hide();
 
+$(document).ajaxStart(function(){
+    $('#loading').show();
+});
+$(document).ajaxStop(function () {
+    $('#loading').hide();
+});
 

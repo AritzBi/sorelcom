@@ -12,6 +12,7 @@
     "font-awesome":"4.x.x",
     "mongodb":"*",
     "passport":"*",
-    "passport-local":"*"
+    "passport-local":"*",
+    "geos":"*"
   }
 }

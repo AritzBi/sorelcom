@@ -14,7 +14,7 @@ html
 		link(href="/css/leaflet.awesome-markers.css", rel="stylesheet", type="text/css")
 		link(href="/css/style.css", rel="stylesheet", type="text/css")
 		link(href="/css/bootstrap.min.css", rel="stylesheet", type="tex)/css")
-		link(href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css", rel="stylesheet" type=")ext/css")
+		link(href="/css/font-awesome.min.css", rel="stylesheet" type=")ext/css")
 		link(href="/css/leaflet.css", rel="stylesheet", type="text/css")
 		link(href="/js/plugins/leaflet-sidebar/L.Control.Sidebar.css", rel="stylesheet" type="text/css")
 		link(href="/css/main.css", rel="stylesheet", type="text/css")
@@ -58,7 +58,7 @@ html
 							i.fa.fa-road(style="color: white")
 							| &nbsp;&nbsp;Routes
 					li
-						-if(_user) {
+						-if(user) {
 							a#upload-button(href="#uploadModal", data-toggle="modal")
 								i.fa.fa-cloud-upload
 								| &nbsp;&nbsp;Upload
@@ -69,7 +69,7 @@ html
 						-}
 
 					li#log-button.pull-right
-						-if(_user) {
+						-if(user) {
 							a#logout-button(href="#")
 								i.fa.fa-user
 								| &nbsp;&nbsp;Logout
@@ -91,6 +91,7 @@ html
 		include modals
 		mixin login()
 		mixin signup()
+		mixin upload()
 
 
 		script(type="text/javascript", src="/js/jquery-1.11.0.min.js")

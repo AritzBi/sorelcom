@@ -60,9 +60,9 @@ mixin upload
 						form#upload-form(action="", method="post", enctype="multipart/form-data")
 						div.form-group
 							label(for="id-upload-name") Name of the route
-							input#id-uplaod-name.form-control.input-lg(type="text", placeholder="")
+							input#id-upload-name.form-control.input-lg(type="text", placeholder="")
 						div.form-group
-							label(for="id-login-pass") Password
-							input#id-upload-pass.form-control.input-lg(type="file")
+							label(for="id-upload-file") Password
+							input#id-route-file.form-control.input-lg(type="file")
 					div.modal-footer
-						button#upload-button.btn.btn-primary.pull-right(type="button") Upload
+						button#upload-btn.btn.btn-primary.pull-right(type="button") Upload

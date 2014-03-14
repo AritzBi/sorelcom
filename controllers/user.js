@@ -8,17 +8,17 @@ passport.use(new LocalStrategy(
 		mongodb.connect('mongodb://localhost:27017/sorelcom', function(err, db){
 			if(err)	return done(err);
 		
-			db.collection('users').find({'name':name}).nextObject(function(err, user){
+			db.collection('users').find({'username':name}).nextObject(function(err, user){
 				if(err)
 					return done(err);
 				if(!user)
 					return done(null, false, {message:"User does not exist"});
 
-				hash(password, user.salt, function(err, hash){
+				hash(pass, user.salt, function(err, hash){
 					if(err)
 						return done(err);
 					if(hash == user.hash)
-						return done(null, user);
+						return done(null, user.username);
 					done(new Error("Invalid password"));
 				});
 				
@@ -27,25 +27,48 @@ passport.use(new LocalStrategy(
 	}
 ));
 
-exports.list = function(req, res){
-  res.send("respond with a resource");
-};
+passport.serializeUser(function(user, done) {
+    return done(null, user.id);
+});
 
 exports.login = function(req, res){
-	console.log(req.body);
  	passport.authenticate('local', function(err ,user, params){
  		if(err)
- 			return res.json({"success": false, "result":err})
+ 			return res.json({"success": false, "result":err.message});
  		if(!user)
- 			 return res.json({"success": false, "result":params.message})
-
- 		res.json({"success":true, "name":"nameme"});
+ 			return res.json({"success": false, "result":params.message});
+ 		
+ 		req.session.user = user;
+ 		//req.session.save();
+ 		res.json({"success":true, "result":user});
 	})(req, res);
 };
 
+exports.logout = function(req, res){
+  	delete req.session.user;
+  	res.json({"success":true});	
+}
+
 exports.register = function(req, res){
-	console.log(req.body);
-	res.json({"message":"MON WTF"});
+	data = req.body;
+	hash(data.password, function(err, salt, hash){
+  		if (err) 
+  			return res.json({"success":false, "result":err});
+  		data.salt = salt;
+  		data.hash = hash;
+
+  		mongodb.connect('mongodb://localhost:27017/sorelcom', function(err, db){
+			if(err)	
+				return res.json({"success":false, "result":err});
+		
+			db.collection('users').insert(data, {safe:true}, function(err, objects){
+				if(err)
+			 		return res.json({"success":false, "result":err});
+			 	req.session.user = data.username;
+				return res.json({"success":true, "result":objects});
+			});
+		});
+	});
 };
 
 
@@ -66,7 +89,7 @@ exports.register = function(req, res){
 var len = 128;
 var iterations = 1200;
 
-exports.hash = function (pwd, salt, fn) {
+var hash = function (pwd, salt, fn) {
   if (3 == arguments.length) {
     crypto.pbkdf2(pwd, salt, iterations, len, function(err, hash){
       fn(err, hash.toString('base64'));
